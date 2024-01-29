@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { ShortenUrlEntity } from './shortenUrl.entity';
 import * as crypto from 'crypto';
 import { PaginationDto } from './dto/pagination.dto';
+import { AtualizarShortenUrlDTO } from './dto/atualizarShortenUrl.dto';
 
 @Injectable()
 export class ShortenUrlService {
@@ -77,8 +78,8 @@ export class ShortenUrlService {
     //const parsedLimit = Math.max(1, parseInt(limit as any, 10) || 1);
   
     const [urls, total] = await this.shortenUrlRepository.findAndCount({
-      take: 5,
-      skip: 5 * (parsedPage - 1),
+      take: 10,
+      skip: 10 * (parsedPage - 1),
       order: { acessNumber: 'DESC' },
     });
   
@@ -86,7 +87,7 @@ export class ShortenUrlService {
       urls,
       total,
       page: parsedPage,
-      totalPages: Math.ceil(total / 5),
+      totalPages: Math.ceil(total / 10),
     };
   }  
 
@@ -103,4 +104,12 @@ export class ShortenUrlService {
       accessNumber: url.acessNumber,
     };
   }
+
+  async updateShortUrl(id: number, atualizarLongUrl: Partial<AtualizarShortenUrlDTO>) {
+    const urlAtulazada = await this.shortenUrlRepository.update(id, atualizarLongUrl);
+  }
+
+  async removeLongUrl(id: number){
+    const usuarioRemovido = await this.shortenUrlRepository.delete(id);
+}
 }
