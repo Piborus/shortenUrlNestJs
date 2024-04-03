@@ -4,16 +4,16 @@ import { ShortenUrlModule } from './shortenUrl/shortenUrl.module';
 import { DbConfigService } from './config/db.config.service';
 import { ConfigModule } from '@nestjs/config';
 
-
 @Module({
   imports: [
     ShortenUrlModule,
     ConfigModule.forRoot({
-      isGlobal: true
+      isGlobal: true,
     }),
     TypeOrmModule.forRootAsync({
       useClass: DbConfigService,
-      inject: [DbConfigService]
-    })],
+      inject: [DbConfigService],
+    }),
+  ],
 })
 export class AppModule {}

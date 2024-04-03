@@ -1,4 +1,15 @@
-import { Controller, Post, Body, Get, Redirect, Param, Query, Put, Delete, HttpCode } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Redirect,
+  Param,
+  Query,
+  Put,
+  Delete,
+  HttpCode,
+} from '@nestjs/common';
 import { ShortenUrlService } from './shortenUrl.service';
 import { PaginationDto } from './dto/pagination.dto';
 import { AtualizarShortenUrlDTO } from './dto/atualizarShortenUrl.dto';
@@ -9,13 +20,15 @@ export class ShortenUrlController {
 
   @Post()
   @HttpCode(201)
-  @ApiBody({ 
+  @ApiBody({
     description: 'Long URL to shorten',
     type: String,
   })
-  async createShortUrl(@Body('longUrl') longUrl: string): Promise<{ shortUrl: string }> {
-    const shortUrl = await this.urlService.shortenUrl(longUrl); 
-    return { shortUrl }; 
+  async createShortUrl(
+    @Body('longUrl') longUrl: string,
+  ): Promise<{ shortUrl: string }> {
+    const shortUrl = await this.urlService.shortenUrl(longUrl);
+    return { shortUrl };
   }
 
   @Get('/longurl/:shortUrl')
@@ -23,12 +36,13 @@ export class ShortenUrlController {
     return this.urlService.getLongUrlAndUpdateAccessNumber(shortUrl);
   }
 
-  
   @Get('/:shortUrl')
   @Redirect()
-  async redirectToLongUrl(@Param('shortUrl') shortUrl: string): Promise<{ url: string }> {
+  async redirectToLongUrl(
+    @Param('shortUrl') shortUrl: string,
+  ): Promise<{ url: string }> {
     const longUrl = await this.urlService.getLongUrl(shortUrl);
-    return { url: longUrl }; 
+    return { url: longUrl };
   }
 
   @Get()
@@ -36,23 +50,26 @@ export class ShortenUrlController {
     return this.urlService.getPaginatedUrls(paginationDto);
   }
 
-  @Put("/:id")
+  @Put('/:id')
   @HttpCode(200)
-  async updateShortUrl(@Param('id') id: number, @Body() ShortenUrlEntity: AtualizarShortenUrlDTO){
+  async updateShortUrl(
+    @Param('id') id: number,
+    @Body() ShortenUrlEntity: AtualizarShortenUrlDTO,
+  ) {
     const url = await this.urlService.updateShortUrl(id, ShortenUrlEntity);
     return {
       url: url,
-      message: "URL atualizada com sucesso!"
-    }
+      message: 'URL atualizada com sucesso!',
+    };
   }
 
-  @Delete("/:id")
+  @Delete('/:id')
   @HttpCode(204)
-  async removeShorturl(@Param('id') id: number){
+  async removeShorturl(@Param('id') id: number) {
     const url = await this.urlService.removeLongUrl(id);
-    return{
+    return {
       url: url,
-      message: "URL removida com sucesso!"
-    }
+      message: 'URL removida com sucesso!',
+    };
   }
 }

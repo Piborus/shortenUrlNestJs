@@ -17,11 +17,11 @@ export class ShortenUrlService {
     const existingShortUrl = await this.shortenUrlRepository.findOne({
       where: { longUrl },
     });
-  
+
     if (existingShortUrl) {
       return existingShortUrl.shortUrl;
     } else {
-      const shortUrl = await this.generateShortUrl(); // Add the await keyword here
+      const shortUrl = await this.generateShortUrl();
       const newShortenUrl = this.shortenUrlRepository.create({
         longUrl,
         shortUrl,
@@ -63,7 +63,6 @@ export class ShortenUrlService {
       throw new NotFoundException('Short URL not found');
     }
 
-    
     existingShortUrl.acessNumber++;
     await this.shortenUrlRepository.save(existingShortUrl);
 
@@ -72,27 +71,27 @@ export class ShortenUrlService {
 
   async getPaginatedUrls(paginationDto: PaginationDto): Promise<any> {
     const { page, limit } = paginationDto;
-  
-    
+
     const parsedPage = Math.max(1, parseInt(page as any, 10) || 1);
-    //const parsedLimit = Math.max(1, parseInt(limit as any, 10) || 1);
-  
+
     const [urls, total] = await this.shortenUrlRepository.findAndCount({
       take: 10,
       skip: 10 * (parsedPage - 1),
       order: { acessNumber: 'DESC' },
     });
-  
+
     return {
       urls,
       total,
       page: parsedPage,
       totalPages: Math.ceil(total / 10),
     };
-  }  
+  }
 
   async getUrlByShortUrl(shortUrl: string): Promise<any> {
-    const url = await this.shortenUrlRepository.findOne({ where: { shortUrl } });
+    const url = await this.shortenUrlRepository.findOne({
+      where: { shortUrl },
+    });
 
     if (!url) {
       throw new NotFoundException('URL not found');
@@ -105,11 +104,17 @@ export class ShortenUrlService {
     };
   }
 
-  async updateShortUrl(id: number, atualizarLongUrl: Partial<AtualizarShortenUrlDTO>) {
-    const urlAtulazada = await this.shortenUrlRepository.update(id, atualizarLongUrl);
+  async updateShortUrl(
+    id: number,
+    atualizarLongUrl: Partial<AtualizarShortenUrlDTO>,
+  ) {
+    const urlAtulazada = await this.shortenUrlRepository.update(
+      id,
+      atualizarLongUrl,
+    );
   }
 
-  async removeLongUrl(id: number){
+  async removeLongUrl(id: number) {
     const usuarioRemovido = await this.shortenUrlRepository.delete(id);
-}
+  }
 }
