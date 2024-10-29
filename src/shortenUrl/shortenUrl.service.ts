@@ -84,6 +84,7 @@ export class ShortenUrlService {
       urls,
       total,
       page: parsedPage,
+      limit: 10,
       totalPages: Math.ceil(total / 10),
     };
   }
